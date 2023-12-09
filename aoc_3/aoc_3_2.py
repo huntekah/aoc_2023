@@ -26,7 +26,7 @@ GEAR_NUMBERS = defaultdict(list)
 
 def read_puzzle():
     with open("input.txt", "r") as f:
-    # with open("small_input.txt", "r") as f:
+        # with open("small_input.txt", "r") as f:
         return f.read().splitlines()
 
 
