@@ -19,6 +19,10 @@ A gear is any * symbol that is adjacent to exactly two part numbers. Its gear ra
 
 This time, you need to find the gear ratio of every gear and add them all up so that the engineer can figure out which gear needs to be replaced."""
 
+from collections import defaultdict
+
+GEAR_NUMBERS = defaultdict(list)
+
 
 def read_puzzle():
     with open("input.txt", "r") as f:
@@ -29,35 +33,32 @@ def read_puzzle():
 def solve_puzzle(puzzle):
     result = 0
     for i, line in enumerate(puzzle):
-        result += get_sum_of_adjacent_numbers(line, puzzle, i)
+        find_gear_numbers(line, puzzle, i)
+    for gear_numbers in GEAR_NUMBERS.values():
+        if len(gear_numbers) == 2:
+            result += gear_numbers[0] * gear_numbers[1]
     return result
 
 
-def get_sum_of_adjacent_numbers(line, puzzle, i):
-    result = 0
+def find_gear_numbers(line, puzzle, i):
+    adjacent_stars = []
     number = 0
-    is_adjacent = False
     for j, char in enumerate(line):
         if char.isdigit():
             number = number * 10 + int(char)
-            if not is_adjacent:
-                is_adjacent = check_if_adjacent(puzzle, i, j)
+            adjacent_stars.extend(get_adjacent_stars(puzzle, i, j))
         else:
-            if is_adjacent:
-                print(f"OK {number}")
-                result += number
-            elif number != 0:
-                print(f"BAD {number}")
+            for gear_location in set(adjacent_stars):
+                GEAR_NUMBERS[gear_location].append(number)
+            adjacent_stars = []
             number = 0
-            is_adjacent = False
+
     else:
-        if is_adjacent:
-            print(f"OK {number}")
-            result += number
-    return result
+        for gear_location in set(adjacent_stars):
+            GEAR_NUMBERS[gear_location].append(number)
 
 
-def check_if_adjacent(puzzle, i, j):
+def get_adjacent_stars(puzzle, i, j):
     fields_to_check = [
         (i - 1, j - 1),
         (i - 1, j),
@@ -68,6 +69,7 @@ def check_if_adjacent(puzzle, i, j):
         (i + 1, j),
         (i + 1, j + 1),
     ]
+    adjacent_stars = []
     for field in fields_to_check:
         if (
             field[0] >= 0
@@ -76,12 +78,13 @@ def check_if_adjacent(puzzle, i, j):
             and field[1] < len(puzzle[0])
         ):
             if check_field(field, puzzle):
-                return True
+                adjacent_stars.append(field)
+    return adjacent_stars
 
 
 def check_field(field, puzzle):
     i, j = field
-    check = (not puzzle[i][j].isdigit()) and (puzzle[i][j] != ".")
+    check = puzzle[i][j] == "*"
     print(f"Checking {i} {j} -> {puzzle[i][j]} is {check}")
     return check
 
