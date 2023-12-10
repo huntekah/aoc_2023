@@ -3,7 +3,7 @@ import re
 
 def read_puzzle():
     with open("input.txt", "r") as f:
-    # with open("small_input_2.txt", "r") as f:
+        # with open("small_input_2.txt", "r") as f:
         return f.read().splitlines()
 
 
