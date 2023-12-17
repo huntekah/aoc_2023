@@ -1,11 +1,17 @@
 from util.process_input import read_puzzle
 
+taken_steps = []
+
 
 def solve_puzzle(puzzle):
     s_location = find_s(puzzle)
     # substitute_s_with_pipe(puzzle, s_location)
     pipe_length = walk_the_pipes(puzzle, s_location)
-    return pipe_length / 2
+    substitute_taken_steps_with_symbol(puzzle)
+    tiles_inside = apply_nonzero_rule(puzzle)
+    # print("\n".join(puzzle))
+    show_puzzle_fragment(puzzle, (0, len(puzzle)), (0, len(puzzle[0])))
+    return pipe_length / 2, tiles_inside
 
 
 def find_s(puzzle):
@@ -23,6 +29,7 @@ def walk_the_pipes(puzzle, s_location):
 
     current_pipe = s_location
     next_pipe = find_next_pipe(puzzle, current_pipe, None)
+    taken_steps.append(next_pipe)
     print("FOUND FIRST PIPE!", next_pipe)
     while True:
         print("STEPS", steps, steps / 2)
@@ -33,6 +40,7 @@ def walk_the_pipes(puzzle, s_location):
         # show_puzzle_fragment(puzzle, [current_pipe[0], next_pipe[0]], [current_pipe[1], next_pipe[1]])
         # show_location(puzzle, next_pipe)
         steps += 1
+        taken_steps.append(next_pipe)
         if next_pipe == s_location:
             print(f"FOUND S AGAIN {current_pipe},{next_pipe}")
             break
@@ -42,15 +50,70 @@ def walk_the_pipes(puzzle, s_location):
     return steps
 
 
+def substitute_taken_steps_with_symbol(puzzle):
+    symbol_map = {
+        "|": "│",
+        "-": "─",
+        "7": "┐",
+        "F": "┌",
+        "J": "┘",
+        "L": "└",
+        ".": " ",
+        "S": "┐",  # hardocded for this puzzle
+    }
+    for r, row in enumerate(puzzle):
+        for c, col in enumerate(row):
+            if (r, c) in taken_steps:
+                old_symbol = puzzle[r][c]
+                new_symbol = symbol_map.get(old_symbol, old_symbol)
+                # substitute one letter (at index step[1]) in a string puzzle[step[0]].
+                puzzle[r] = puzzle[r][:c] + new_symbol + puzzle[r][c + 1 :]
+            else:
+                puzzle[r] = puzzle[r][:c] + "." + puzzle[r][c + 1 :]
+
+
+def apply_nonzero_rule(puzzle):
+    tiles_inside = 0
+    symbols_chanigning_winding_number = ["┌", "┐", "│"]  # ["┐", "┌", "┘", "└", "|"]
+    for r, row in enumerate(puzzle):
+        winding_number = 0
+        winding_direction = 1
+        for c, col in enumerate(row):
+            if puzzle[r][c] in symbols_chanigning_winding_number:
+                loc_str = f"({r},{c})"
+                print(
+                    f"{loc_str:<5}\tFound {puzzle[r][c]}, {winding_number=} {winding_direction=}"
+                )
+                winding_number += winding_direction
+                winding_direction *= -1
+            elif winding_number != 0 and (r, c) not in taken_steps:
+                winding_number_as_one_character = (
+                    str(winding_number) if winding_number > 0 else "2"
+                )
+                puzzle[r] = (
+                    puzzle[r][:c] + winding_number_as_one_character + puzzle[r][c + 1 :]
+                )
+                tiles_inside += 1
+    return tiles_inside
+
+
 def find_next_pipe(puzzle, current_pipe, last_pipe) -> tuple:
     if last_pipe is None and puzzle[current_pipe[0]][current_pipe[1]] == "S":
         print("S")
         # Look for Possible pipes around S
         for i, j in [(0, 1), (1, 0), (0, -1), (-1, 0)]:  # right, down, left, up
             next_pipe = (current_pipe[0] + i, current_pipe[1] + j)
+            print(
+                next_pipe,
+                min(next_pipe) >= 0,
+                next_pipe[0] < len(puzzle),
+                next_pipe[1] < len(puzzle[0]),
+                is_connected(puzzle, current_pipe, next_pipe),
+            )
             if (
                 min(next_pipe) >= 0
-                and max(next_pipe) < len(puzzle)
+                and next_pipe[0] < len(puzzle)
+                and next_pipe[1] < len(puzzle[0])
                 and is_connected(puzzle, current_pipe, next_pipe)
             ):
                 print(
@@ -170,7 +233,7 @@ def get_steps(puzzle, current_pipe):
 
 
 if __name__ == "__main__":
-    # puzzle = read_puzzle("small_input2.txt")
+    # puzzle = read_puzzle("small_input4.txt")
     puzzle = read_puzzle("input.txt")
     # puzzle = read_puzzle()
     print(solve_puzzle(puzzle))
