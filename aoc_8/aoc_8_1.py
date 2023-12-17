@@ -5,11 +5,16 @@ taken_steps = []
 # new type Directions which is list of binary numbers
 Directions = list[int]
 # Nodes is a Dict with two nodes like node['AAA'] = ['BBB', 'CCC']
-Nodes = dict[str, list[str]]
+Node = str
+Nodes = dict[Node, list[Node]]
 def solve_puzzle(puzzle):
     directions, nodes = transform_puzzle(puzzle)
-    result = traverse_graph(directions, nodes, "AAA", 0)
-    return result
+    next_node = "AAA"
+    steps = 0
+    while next_node != "ZZZ":
+        next_node = traverse_graph(directions, nodes, next_node, steps)
+        steps += 1
+    return steps
 
 def transform_puzzle(puzzle) -> tuple[Directions, Nodes]:
     directions: Directions = letters_to_directions(puzzle[0])
@@ -34,11 +39,10 @@ def read_node(line: str) -> tuple[str, list[str]]:
     children = [child.strip() for child in children]
     return node, children
 
-def traverse_graph(directions: Directions, nodes: Nodes, node: str, steps: int) -> int:
-    if node == "ZZZ":
-        return steps
-    next_node = nodes[node][directions[steps % len(directions)]]
-    return traverse_graph(directions, nodes, next_node, steps + 1)
+def traverse_graph(directions: Directions, nodes: Nodes, node: str, steps: int) -> Node:
+    # if node == "ZZZ":
+    #     return steps
+    return nodes[node][directions[steps % len(directions)]]
 
 
 if __name__ == "__main__":
