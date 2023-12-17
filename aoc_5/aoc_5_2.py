@@ -3,7 +3,7 @@ import re
 
 def read_puzzle():
     with open("input.txt", "r") as f:
-    # with open("small_input.txt", "r") as f:
+        # with open("small_input.txt", "r") as f:
         return f.read().splitlines()
 
 
@@ -23,7 +23,7 @@ def solve_puzzle(puzzle):
 def get_seed_ranges(puzzle):
     numbers = string_of_numbers_to_list(puzzle[0].split(":")[-1])
     # print(numbers)
-    ranges = [(a, a+b-1) for a, b in zip(numbers[::2], numbers[1::2])]
+    ranges = [(a, a + b - 1) for a, b in zip(numbers[::2], numbers[1::2])]
     # print(ranges)
     return ranges
 
@@ -48,12 +48,12 @@ def transform_seed_ranges(seed_ranges, mappings):
     # final_seeds = []
     ranges_after_mapping = []
     used_ranges = []
-    for i,mapping in enumerate(mappings.values()):
+    for i, mapping in enumerate(mappings.values()):
         # print(f"MAP {i}")
         for d, s, r in mapping:
             for seed_range in seed_ranges:
                 # print(f"\t{seed_range=}\t{s=}\t{s+r-1=}\t{d=}-{d+r-1}")
-                if intersection := range_intersection(seed_range, (s, s + r-1)):
+                if intersection := range_intersection(seed_range, (s, s + r - 1)):
                     # print(f"SR: {seed_range} S,S+R: {s, s+r} I: {intersection}")
                     ranges_after_mapping.append(
                         (intersection[0] + d - s, intersection[-1] + d - s)
