@@ -44,6 +44,7 @@ def get_shortest_path_lengths_between_stars(galaxy: Galaxy) -> list[int]:
             path_lengths.append(
                 get_shortest_path_length_between_stars(stars[i], stars[j])
             )
+            print(f"({i} - {j})\t{path_lengths[-1]}")
     return path_lengths
 
 
@@ -58,26 +59,13 @@ def get_stars(galaxy: Galaxy) -> list[tuple[int, int]]:
 
 def get_shortest_path_length_between_stars(star1: tuple[int], star2: tuple[int]) -> int:
     """Manhattan distance between two stars"""
-    return abs(star1[0] - star2[0]) + abs(star1[1] - star2[1])
-    # print(f"{inspect.stack()[0][3]}({star1}, {star2})")
-    # visited: set[tuple[int]] = set()
-    # queue: list[tuple[int]] = [star1]
-    # distances: dict[tuple[int], int] = {star1: 0}
-    # while queue:
-    #     # print(queue)
-    #     cell = queue.pop(0)
-    #     if cell == star2:
-    #         return distances[cell]
-    #     visited.add(cell)
-    #     for neighbour in get_neighbours(galaxy, cell):
-    #         if neighbour not in visited:
-    #             queue.append(neighbour)
-    #             distances[neighbour] = distances[cell] + 1
-    # raise ValueError(f"Could not find path between {star1} and {star2}")
+    distance = abs(star1[0] - star2[0]) + abs(star1[1] - star2[1])
+    # print(distance)
+    return distance
 
 
 if __name__ == "__main__":
-    SMALL = False
+    SMALL = True
     if SMALL:
         puzzle: Puzzle = read_puzzle("small_input.txt")
         result = solve_puzzle(puzzle)
