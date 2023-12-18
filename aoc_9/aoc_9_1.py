@@ -3,17 +3,21 @@ from collections import Counter
 from functools import cmp_to_key
 from typing import Dict, Set, Tuple
 
-from util.process_input import read_puzzle, Puzzle, string_of_numbers_to_list
+from util.process_input import Puzzle, read_puzzle, string_of_numbers_to_list
 
 Sequence = list[int]
 Sequences = list[Sequence]
+
+
 def solve_puzzle(puzzle: Puzzle) -> int:
     sequences = read_sequences(puzzle)
     values = [extrapolate_next_value(sequence) for sequence in sequences]
     return sum(values)
 
+
 def read_sequences(puzzle: Puzzle) -> Sequences:
     return [string_of_numbers_to_list(line) for line in puzzle]
+
 
 def extrapolate_next_value(sequence: Sequence) -> int:
     print(f"{inspect.stack()[0][3]}({sequence})")
@@ -48,9 +52,12 @@ def extrapolate_next_value(sequence: Sequence) -> int:
     print(sequences)
     print(sequences[0][-1])
     return sequences[0][-1]
+
+
 def extrapolate_next_sequence(sequence: Sequence) -> Sequence:
     """find difference between each consequent pair of numbers"""
     return [sequence[i + 1] - sequence[i] for i in range(len(sequence) - 1)]
+
 
 if __name__ == "__main__":
     SMALL = False

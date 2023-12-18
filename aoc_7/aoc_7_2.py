@@ -121,6 +121,7 @@ def compare_hands_by_card(hand1: str, hand2: str) -> int:
             return -1
     return 0
 
+
 def substitute_J_with_any_card(hand: str) -> str:
     # 5J should be 5A
     # 4J and 1? should be 5?
@@ -142,10 +143,11 @@ def substitute_J_with_any_card(hand: str) -> str:
     # find most common card which is not J.
     if j_count == 5:
         return "AAAAA"
-    best_card_to_substitute_j = Counter(hand.replace("J","")).most_common()[0][0]
+    best_card_to_substitute_j = Counter(hand.replace("J", "")).most_common()[0][0]
     hand = hand.replace("J", best_card_to_substitute_j)
 
     return hand
+
 
 if __name__ == "__main__":
     SMALL = False

@@ -25,13 +25,17 @@ def solve_puzzle(puzzle):
     # find least common multiple of distances
     return least_common_multiple(distances)
 
-def get_distance_to_ending_node(directions : Directions, node: Node, nodes: Nodes) -> int:
+
+def get_distance_to_ending_node(
+    directions: Directions, node: Node, nodes: Nodes
+) -> int:
     steps = 0
     next_node = node
     while not next_node.endswith("Z"):
         next_node = traverse_graph(directions, nodes, next_node, steps)
         steps += 1
     return steps
+
 
 def transform_puzzle(puzzle) -> tuple[Directions, Nodes]:
     directions: Directions = letters_to_directions(puzzle[0])
@@ -64,6 +68,7 @@ def traverse_graph(directions: Directions, nodes: Nodes, node: str, steps: int) 
     #     return steps
     return nodes[node][directions[steps % len(directions)]]
 
+
 def least_common_multiple(numbers: list[int]) -> int:
     # https://www.geeksforgeeks.org/finding-lcm-two-array-numbers-without-using-gcd/
     lcm = numbers[0]
@@ -71,12 +76,14 @@ def least_common_multiple(numbers: list[int]) -> int:
         lcm = lcm * i // gcd(lcm, i)
     return lcm
 
+
 def gcd(a: int, b: int) -> int:
     # https://www.geeksforgeeks.org/python-math-function-gcd/
     if b == 0:
         return a
     else:
         return gcd(b, a % b)
+
 
 if __name__ == "__main__":
     SMALL_INPUT = False
