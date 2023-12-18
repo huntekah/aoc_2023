@@ -1,7 +1,7 @@
 import re
 
-
-def read_puzzle(input_file: str = "input.txt") -> list[str]:
+Puzzle = list[str]
+def read_puzzle(input_file: str = "input.txt") -> Puzzle:
     with open(input_file, "r") as f:
         return f.read().splitlines()
 

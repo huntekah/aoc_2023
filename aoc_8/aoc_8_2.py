@@ -8,16 +8,30 @@ Directions = list[int]
 Node = str
 Nodes = dict[Node, list[Node]]
 
-
+# in this approach we start from all nodes ending with "A" like "XXA" and traverse graph all nodes simultaneusly up to a node ending with "Z" like "XXZ"
 def solve_puzzle(puzzle):
     directions, nodes = transform_puzzle(puzzle)
-    next_node = "AAA"
+    starting_nodes = [node for node in nodes if node.endswith("A")]
+    finish_nodes = [node for node in nodes if node.endswith("Z")]
+
+    distances = []
+    for starting_node in starting_nodes:
+        print(f"Starting from {starting_node}")
+        steps = get_distance_to_ending_node(directions, starting_node, nodes)
+        print(f"Steps: {steps}")
+        distances.append(steps)
+
+    print(distances)
+    # find least common multiple of distances
+    return least_common_multiple(distances)
+
+def get_distance_to_ending_node(directions : Directions, node: Node, nodes: Nodes) -> int:
     steps = 0
-    while next_node != "ZZZ":
+    next_node = node
+    while not next_node.endswith("Z"):
         next_node = traverse_graph(directions, nodes, next_node, steps)
         steps += 1
     return steps
-
 
 def transform_puzzle(puzzle) -> tuple[Directions, Nodes]:
     directions: Directions = letters_to_directions(puzzle[0])
@@ -50,11 +64,24 @@ def traverse_graph(directions: Directions, nodes: Nodes, node: str, steps: int) 
     #     return steps
     return nodes[node][directions[steps % len(directions)]]
 
+def least_common_multiple(numbers: list[int]) -> int:
+    # https://www.geeksforgeeks.org/finding-lcm-two-array-numbers-without-using-gcd/
+    lcm = numbers[0]
+    for i in numbers[1:]:
+        lcm = lcm * i // gcd(lcm, i)
+    return lcm
+
+def gcd(a: int, b: int) -> int:
+    # https://www.geeksforgeeks.org/python-math-function-gcd/
+    if b == 0:
+        return a
+    else:
+        return gcd(b, a % b)
 
 if __name__ == "__main__":
     SMALL_INPUT = False
     if SMALL_INPUT:
-        puzzle = read_puzzle("small_input.txt")
+        puzzle = read_puzzle("small_input2.txt")
         print(solve_puzzle(puzzle))
         assert 6 == solve_puzzle(puzzle)
     else:
