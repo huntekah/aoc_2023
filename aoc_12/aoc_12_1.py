@@ -1,9 +1,11 @@
 import inspect
+import re
+from itertools import product
+
 from tqdm import tqdm
 
 from util.process_input import Puzzle, read_puzzle, string_of_numbers_to_list
-import re
-from itertools import product
+
 ### Puzzle description ###
 
 # In the giant field just outside, the springs are arranged into rows. For each row, the condition records show every spring and whether it is operational (.) or damaged (#). This is the part of the condition records that is itself damaged; for some springs, it is simply unknown (?) whether the spring is operational or damaged.
@@ -66,11 +68,13 @@ unknown = "?"
 
 possible_could_bees = {}
 
+
 def solve_puzzle(puzzle: Puzzle) -> int:
     records: Records = puzzle
 
     arrangements: list[int] = find_out_possible_arrangements_for_records(records)
     return sum(arrangements)
+
 
 def find_out_possible_arrangements_for_records(records: Records) -> list[int]:
     arrangements: list[int] = []
@@ -93,6 +97,7 @@ def find_out_possible_arrangements_for_record(record: str) -> int:
 
     return n_arrangements
 
+
 def get_all_possible_arrangements(normal: str) -> list[str]:
     arrangement_options = []
     for char in normal:
@@ -103,6 +108,7 @@ def get_all_possible_arrangements(normal: str) -> list[str]:
     arrangements = product(*arrangement_options)
     for arrangement in arrangements:
         yield "".join(arrangement)
+
 
 def compress_record(record: str) -> list[int]:
     # return compressed record
@@ -124,6 +130,7 @@ def compress_record(record: str) -> list[int]:
     #     last = char
     # return compressed
 
+
 def find_arrangements_by_uncompression(normal: str, compressed: list[int]) -> int:
     arrangements = 0
     for try_n in uncompress_record(compressed, len(normal)):
@@ -143,11 +150,15 @@ def uncompress_record(compressed: list[int], length: int) -> list[str]:
         uncompressions = uncompress_record_helper(uncompressions)
     return uncompressions
 
+
 def uncompress_record_helper(uncompressions: list[str]) -> list[str]:
     new_uncompressions = []
     for uncompression in uncompressions:
-        new_uncompressions.extend(insert_operational_near_other_operational(uncompression))
+        new_uncompressions.extend(
+            insert_operational_near_other_operational(uncompression)
+        )
     return new_uncompressions
+
 
 def simple_uncompress_record(compressed: list[int]) -> str:
     # return uncompressed record
@@ -156,6 +167,8 @@ def simple_uncompress_record(compressed: list[int]) -> str:
     for i, n in enumerate(compressed):
         uncompressed += n * damaged + operational
     return uncompressed[:-1]
+
+
 def could_be_the_same_records(normal: str, try_n: str) -> bool:
     if (normal, try_n) in possible_could_bees:
         return possible_could_bees[(normal, try_n)]
@@ -168,6 +181,7 @@ def could_be_the_same_records(normal: str, try_n: str) -> bool:
     possible_could_bees[(normal, try_n)] = True
     return True
 
+
 def insert_operational_near_other_operational(record: str) -> list[str]:
     # return all possible records with one more operational
     # transform "#.#.###" to [".#.#.###", "#..#.###","#.#..###","#.#.###."]
@@ -176,6 +190,7 @@ def insert_operational_near_other_operational(record: str) -> list[str]:
         if char == operational:
             new_records.append(record[:i] + operational + record[i:])
     return new_records
+
 
 if __name__ == "__main__":
     SMALL = False

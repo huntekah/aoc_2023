@@ -2,6 +2,7 @@ import inspect
 from collections import Counter
 from functools import cmp_to_key
 from typing import Dict, Set, Tuple
+
 from tqdm import tqdm
 
 from util.process_input import Puzzle, read_puzzle, string_of_numbers_to_list
@@ -71,18 +72,16 @@ def get_shortest_path_length_between_stars(
     empty_columns = count_empty_columns_between_stars(galaxy, star1, star2)
     # empty_crossings = count_empty_crossings_between_stars(galaxy, star1, star2)
     # print(f"{empty_rows=} {empty_columns=}")
-    additional_steps = (empty_rows + empty_columns) * (void_multiplier - 1) #+ empty_crossings * (void_multiplier - 1) ** 2
+    additional_steps = (empty_rows + empty_columns) * (
+        void_multiplier - 1
+    )  # + empty_crossings * (void_multiplier - 1) ** 2
     # additional_rows = empty_rows * (void_multiplier)
     # additional_columns = empty_columns * (void_multiplier)
     # print(f"{additional_steps=}")
     # print(f"{empty_rows=} {empty_columns=}")
     # print(f" regular rows = {abs(star1[0] - star2[0])}")
     # print(f" regular columns = {abs(star1[1] - star2[1])}")
-    distance = (
-        abs(star1[0] - star2[0])
-        + abs(star1[1] - star2[1])
-        + additional_steps
-    )
+    distance = abs(star1[0] - star2[0]) + abs(star1[1] - star2[1]) + additional_steps
 
     return distance
 
@@ -115,8 +114,11 @@ def count_empty_columns_between_stars(
 def is_empty_row(galaxy: Galaxy, row: int) -> bool:
     return star not in galaxy[row]
 
+
 def is_empty_column(galaxy: Galaxy, column: int) -> bool:
     return star not in list(zip(*galaxy))[column]
+
+
 def count_empty_crossings_between_stars(
     galaxy: Galaxy, star1: tuple[int, int], star2: tuple[int, int]
 ) -> int:
