@@ -46,7 +46,6 @@ def solve_puzzle(puzzle: Patterns) -> int:
     for record in records:
         print("\n".join(record))
 
-        # original_mirror : tuple[list[int],list[int]] = get_original_mirrors_from_record(record)
         r, c = find_one_off_reflections(record)
         row_mirrors += r
         column_mirrors += c
@@ -54,51 +53,14 @@ def solve_puzzle(puzzle: Patterns) -> int:
         print(original_mirror)
         used_row_mirrors = [*original_mirror[0]]
         used_column_mirrors = [*original_mirror[1]]
-        # print("len-> ",len([a for a in get_all_smudge_substitutions(record)]))
         for tmp_record in get_all_smudge_substitutions(record):
-            # print(tmp_record)
-            # if tmp_record[1] != ".##.###......###.":
-            #     continue
-            # print("xxxx")
-            # print("\n".join(tmp_record))
-            # print("M\n" + "\n".join(tmp_record))
             if new_mirror := get_mirror_from_record(tmp_record, original_mirror):
-                # if new_mirror == original_mirror:
-                # print(f"\tNot using {new_mirror=}, {original_mirror=}")
-                # continue
-                # print(f"\t{new_mirror=},\n\t{original_mirror=},\n\t{'different' if new_mirror != original_mirror else 'same'}")
                 new_rows = list(set(new_mirror[0]) - set(used_row_mirrors))
                 new_columns = list(set(new_mirror[1]) - set(used_column_mirrors))
                 row_mirrors += sum(new_rows)
                 column_mirrors += sum(new_columns)
                 used_row_mirrors.extend(new_rows)
                 used_column_mirrors.extend(new_columns)
-                # if new_mirror[0] in used_row_mirrors:
-                # print(f"\t\t{new_mirror[0]} already used")
-                # pass
-                # else:
-                #     used_row_mirrors.append(new_mirror[0])
-                #     row_mirrors += new_mirror[0]
-                # if new_mirror[1] in used_column_mirrors:
-                # print(f"\t\t{new_mirror[1]} already used")
-                # pass
-                # else:
-                #     used_column_mirrors.append(new_mirror[1])
-                #     column_mirrors += new_mirror[1]
-                # row_mirrors += new_mirror[0]
-                # column_mirrors += new_mirror[1]
-                # if new_mirror[0] == "row":
-                #     row_mirrors += new_mirror[1]
-                #     print("_v_")
-                #     print("\n".join(tmp_record))
-                #     print(f"ROW MIRROR FOUND AT {new_mirror[1]}")
-                #     # break
-                # elif new_mirror[0] == "col":
-                #     column_mirrors += new_mirror[1]
-                #     print("_v_")
-                #     print("\n".join(tmp_record))
-                #     print(f"COLUMN MIRROR FOUND AT {new_mirror[1]}")
-                # break
         print("______________________")
     print(f"{row_mirrors=} {column_mirrors=}")
     return row_mirrors, column_mirrors  # , 100 * row_mirrors + column_mirrors
@@ -125,11 +87,6 @@ def find_one_off_reflection(record: Pattern) -> Optional[int]:
     return 0
 
 
-# def get_new_mirror_from_record(record: Pattern, old_mirror: tuple[str,int]) -> Optional[tuple[str, int]]:
-#     new_mirror = get_mirror_from_record(record)
-#     if new_mirror == old_mirror:
-#         return None
-#     return new_mirror
 def get_original_mirrors_from_record(record: Pattern) -> tuple[list, list]:
     if r := get_mirror_from_record(record):
         return r
@@ -230,45 +187,6 @@ def read_puzzle(filename: str) -> Patterns:
         ]
         return records
 
-
-def correct_solution_from_savbell(puzzle):
-    # maps = [[list(row) for row in m] for m in [m.split('\n') for m in q[13].strip().split('\n\n')]]
-    maps = [[list(row) for row in m] for m in puzzle]
-
-    def find_one_off_reflection(map):
-        for col in range(1, len(map[0])):
-            split = min(col, len(map[0]) - col)
-            num_differences = 0
-            for row in map:
-                for l, r in zip(row[col - split : col], row[col : col + split][::-1]):
-                    if l != r:
-                        num_differences += 1
-                if num_differences > 1:
-                    break
-            if num_differences == 1:
-                return col
-
-    columns = 0
-    rows = 0
-    for m in maps:
-        vertical = find_one_off_reflection(m)
-        horizontal = find_one_off_reflection(list(zip(*m)))
-        columns += vertical if vertical else 0
-        rows += horizontal if horizontal else 0
-    return rows, columns
-
-
-def f(p, s=1):
-    for i in range(len(p)):
-        if (
-            sum(c != d for l, m in zip(p[i - 1 :: -1], p[i:]) for c, d in zip(l, m))
-            == s
-        ):
-            return i
-    else:
-        return 0
-
-
 def generate_random_mirror(size):
     from random import choice
 
@@ -276,30 +194,7 @@ def generate_random_mirror(size):
 
 
 if __name__ == "__main__":
-    diff = False
-    n = 0
-    while not diff:
-        print(f"({n})\t" + "X" * 100)
-        n += 1
-        puzzle = [generate_random_mirror(4)]
-        print("          1111111")
-        print("12345667890123456")
-        puzzle = read_puzzle("input.txt")
-        my_result = solve_puzzle(puzzle)
-        savbell_result = correct_solution_from_savbell(puzzle)
-        topaz_result = (f(puzzle), f([zip(*puzzle)]))
-        print(f"{my_result=}")
-        print(f"{savbell_result=}")
-        print(f"{topaz_result=}")
-        print(f"{my_result[0] * 100 + my_result[1] = }")
-        break
-        if my_result != savbell_result:
-            print("(row, col)")
-            # print(f"{my_result=}")
-            # print(f"{savbell_result=}")
-            diff = True
-    exit()
-    SMALL = True
+    SMALL = False
     if SMALL:
         puzzle: Patterns = read_puzzle("small_input3.txt")
         result = solve_puzzle(puzzle)
