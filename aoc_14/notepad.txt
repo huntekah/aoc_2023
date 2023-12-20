@@ -1,0 +1,26 @@
+loop_start=3, loop_end=9, loop_length=7
+f(22) = f(22 % 7 + 7) = f(8) = 53
+1    Weight: 87   Hash: -368
+2    Weight: 69   Hash:  577
+3    Weight: 69   Hash:  757 <--- loop_start
+4    Weight: 69   Hash:  242
+5    Weight: 65   Hash: -581
+6    Weight: 64   Hash: -243
+7    Weight: 65   Hash:   37
+8    Weight: 63   Hash:   53
+9    Weight: 68   Hash:  889 <--- loop_end
+10   Weight: 69   Hash:  757
+11    Weight: 69   Hash:  242
+12    Weight: 65   Hash: -581
+13    Weight: 64   Hash: -243
+14    Weight: 65   Hash:   37
+15    Weight: 63   Hash:   53
+16    Weight: 68   Hash:  889
+17   Weight: 69   Hash:  757
+18   Weight: 69   Hash:  242
+19   Weight: 65   Hash: -581
+20   Weight: 64   Hash: -243
+21   Weight: 65   Hash:   37
+22   Weight: 63   Hash:   53
+23   Weight: 68   Hash:  889
+24   Weight: 69   Hash:  757
