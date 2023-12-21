@@ -187,6 +187,7 @@ def read_puzzle(filename: str) -> Patterns:
         ]
         return records
 
+
 def generate_random_mirror(size):
     from random import choice
 

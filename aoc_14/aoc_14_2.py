@@ -41,7 +41,8 @@ def solve_puzzle(puzzle: URecord) -> int:
     final_score = [
         a[0][1]
         for a in visited_records.values()
-        if (a[0][0] % loop_length == repetitions % loop_length) and (a[0][0] > loop_start)
+        if (a[0][0] % loop_length == repetitions % loop_length)
+        and (a[0][0] > loop_start)
     ][0]
     return final_score
 
