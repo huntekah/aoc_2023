@@ -21,11 +21,9 @@ def solve_puzzle(puzzle) -> int:
             l, v = step.split("=")
             h = hash_step(l)
             bbox = add_label_to_bbox(bbox, h, l, int(v))
-            # print(f"{l=} => {hash_step(l)=} -> {v=}")
         elif "-" in step:
             l = step.split("-")[0]
             bbox = remove_label_from_bbox(bbox, l)
-            # print(f"{l=} => {hash_step(l)=}")
         print(f"After {repr(step)}:")
         show_bbox(bbox)
     return count_score(bbox)
@@ -56,8 +54,6 @@ def count_score(bbox: Bbox) -> int:
 
 
 def add_label_to_bbox(bbox: Bbox, h: int, l: str, v: int) -> Bbox:
-    if l == "ot" and v == 7:
-        print("debug")
     loc = _find_in_bbox(bbox, h, l)
     if loc is not None:
         # update value
@@ -75,15 +71,11 @@ def _find_in_bbox(bbox: Bbox, h: int, l: str) -> Optional[int]:
 
 def remove_label_from_bbox(bbox: Bbox, label: str) -> Bbox:
     h = hash_step(label)
-    # if _is_in_box(bbox[h], label):
-    #     bbox[h] = _remove(bbox[h], label)
-    # return bbox
     return (
         bbox[:h]
         + [_remove(bbox[h], label) if _is_in_box(bbox[h], label) else bbox[h]]
         + bbox[h + 1 :]
     )
-    # return [box if not _is_in_box(box,label) else _remove(box,label) for box in bbox]
 
 
 def _remove(box: Box, label: str) -> Box:
